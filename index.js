@@ -25,6 +25,26 @@ app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
 
+app.get('/info', (request, response) => {
+
+    const options = {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: 'Europe/Helsinki'
+    }
+
+    const now = new Date()
+    const formattedDate = now.toLocaleString('fi-FI', options)
+    response.send(
+        `<p>Phonebook has info for ${persons.length} people</p>
+        <p>${formattedDate} GMT+0200 (Eastern European Standard Time)</p>`)
+})
+
 app.get('/api/persons/:id', (request, response) => {
     const id = request.params.id
     const person = persons.find(person => person.id === id)
@@ -48,7 +68,6 @@ const generateId = () => {
         : 0
     return String(maxId + 1)
 }
-
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
