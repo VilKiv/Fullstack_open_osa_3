@@ -61,7 +61,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 const generateId = () => {
     const randomInt = Math.floor(Math.random() * 1000000)
-    return randomInt
+    return String(randomInt)
 }
 
 app.post('/api/persons', (request, response) => {
@@ -92,7 +92,7 @@ app.post('/api/persons', (request, response) => {
     response.json(person)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
