@@ -26,29 +26,15 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-
-    const options = {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        timeZone: 'Europe/Helsinki'
-    }
-
     const now = new Date()
-    const formattedDate = now.toLocaleString('fi-FI', options)
     response.send(
         `<p>Phonebook has info for ${persons.length} people</p>
-        <p>${formattedDate} GMT+0200 (Eastern European Standard Time)</p>`)
+        <p>${now.toString()}</p>`)
 })
 
 app.get('/api/persons/:id', (request, response) => {
     const id = request.params.id
     const person = persons.find(person => person.id === id)
-
     if (person) {
         response.json(person)
     } else {
@@ -63,25 +49,31 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 const generateId = () => {
-    const maxId = notes.length > 0
-        ? Math.max(...notes.map(n => Number(n.id)))
-        : 0
-    return String(maxId + 1)
+    const randomInt = Math.floor(Math.random() * 1000000)
+    return randomInt
 }
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
-    if (!body.name) {
+    if (!body.name || body.name.length === 0) {
         return response.status(400).json({
             error: 'name missing'
         })
+    } else if (!body.number || body.number.length === 0) {
+        return response.status(400).json({
+            error: 'number missing'
+        }) 
+    } else if (persons.find((person) => person.name === body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
     }
-
+    const id = generateId()
     const person = {
-        name: person.name,
-        number: person.number,
-        id: generateId(),
+        name: body.name,
+        number: body.number,
+        id: id
     }
 
     persons = persons.concat(person)
