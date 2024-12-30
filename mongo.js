@@ -32,7 +32,7 @@ if (process.argv.length === 5) {
     console.log('person saved!')
     mongoose.connection.close()
   })
-} 
+}
 else if (process.argv.length === 3) {
   console.log('phonebook:')
   Person.find({}).then(result => {
